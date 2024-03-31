@@ -3,19 +3,22 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 
 public class GameScreen implements Screen {
 	private Game game;
 	SpriteBatch batch;float elapsedTime = 0;int dem=0;
-	float time = 0;
+	float time = 0;float time2 =0;
 	Texture img ,img2,imgga,backgroundTexture;
 	int NumWidth_ga = 7;
 	int NumHeight_ga=2;
@@ -32,6 +35,10 @@ public class GameScreen implements Screen {
 	
 	
 	Sprite backgroundSprite;
+	private Music backgroundMusic;
+	private BitmapFont font;
+   
+ 
 	
 	// GameScreen(Game game) {
 	 //       this.game = game;
@@ -53,8 +60,19 @@ public class GameScreen implements Screen {
 	public GameScreen(Game game2) {
 		this.game = game2;
 		create();
+		  font = new BitmapFont();
+	        font.setColor(Color.WHITE); // Màu của văn bản
+	        font.getData().setScale(2); // Tăng kích thước của văn bản (tuỳ chọn)
+	        
+	        //score = 0;
 	}
 	public void create () {
+	    backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("music.mp3"));
+	    backgroundMusic.setVolume(0.2f);
+        // Loop nhạc (nếu bạn muốn nó phát liên tục)
+        backgroundMusic.setLooping(true);
+        // Play nhạc
+        backgroundMusic.play();
 		 backgroundTexture = new Texture("back3.jpg"
 		 		+ ""
 		 		+ "");
@@ -97,11 +115,15 @@ public class GameScreen implements Screen {
 	  
 	   
 	t2=new turn2(play, batch);
-	t2.tao0();
-	   t2.tao1(-200,500);
-	   t2.tao2(1800,500 );
-	   t2.tao3(-100, 100);
-	   t2.tao4(1000, 100);
+		t2.tao8(400,300);
+		//t2.tao5(100,500);
+		t2.tao6(400, 400);
+		t2.tao7(400, 400);
+	   //t2.tao0();
+	  // t2.tao1(-200,500);
+	   //t2.tao2(1800,500 );
+	 //  t2.tao3(-100, 100);
+	  // t2.tao4(1000, 100);
 	   
 	   
 	   chickendeath = Gdx.audio.newSound(Gdx.files.internal("chickendeath.mp3"));
@@ -109,25 +131,36 @@ public class GameScreen implements Screen {
 	   
 	}
 	
-//	@Override
+//	@Override 
+	/*
 	public void render () {
 		ScreenUtils.clear(1, 0, 0, 1);
+		 Gdx.gl.glClearColor(0, 0, 0, 1);
+	        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		batch.draw(backgroundTexture, 0, 0);
+		time2 +=Gdx.graphics.getDeltaTime();
+		if(time2>=4f) {
+			play.score+=5;
+			time2 = 0;
+		}
+		
 		
 		time += Gdx.graphics.getDeltaTime();
 		
-		
+		 font.draw(batch, "Score: " + play.score, 20, Gdx.graphics.getHeight() - 20);
+		 font.draw(batch, "Lives: " + play.live, 20, Gdx.graphics.getHeight() - 50);
 		  
 		play.Draw(batch);
 		
 		if (!play.gameOver)
 		{
-			t2.xuat0();
-		if (time>=0f) {t2.xuat1();}	
+			//t2.xuat0();
+			t2.xuat10();
+		//if (time>=0f) {t2.xuat1();}	
 		
 		
-		if(time >=5f&& time<5.5f) trung_laze_do.Alive=true;
+		//if(time >=5f&& time<5.5f) trung_laze_do.Alive=true;
 		if(trung_laze_do.Alive==true)
 		{
 			trung_laze_do.Draw(batch);
@@ -141,8 +174,8 @@ public class GameScreen implements Screen {
 			
 			
 		if(time >=10f) t2.xuat2();
-		if(time >= 15f) t2.xuat3();
-		if(time>=15f) t2.xuat4();
+		//if(time >= 15f) t2.xuat3();
+		//if(time>=15f) t2.xuat4();
 		
         }
 		else {
@@ -156,7 +189,50 @@ public class GameScreen implements Screen {
 		      
 		}
 		batch.end();
+	} */
+	
+	
+	public void render() {
+	    ScreenUtils.clear(1, 0, 0, 1);
+	    Gdx.gl.glClearColor(0, 0, 0, 1);
+	    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+	    
+	    batch.begin();
+	    batch.draw(backgroundTexture, 0, 0);
+	    
+	    time2 += Gdx.graphics.getDeltaTime();
+	    if (time2 >= 4f) {
+	        play.score += 5;
+	        time2 = 0;
+	    }
+	    
+	    time += Gdx.graphics.getDeltaTime();
+	    font.draw(batch, "Score: " + play.score, 20, Gdx.graphics.getHeight() - 20);
+	    font.draw(batch, "Lives: " + play.live, 20, Gdx.graphics.getHeight() - 50);
+	    play.Draw(batch);
+	    
+	    if (!play.gameOver) {
+	        t2.xuat7(); // Chỉ render turn 10
+	        
+	        if (trung_laze_do.Alive) {
+	            trung_laze_do.Draw(batch);
+	        }
+	        
+	        if (play.sprite.getBoundingRectangle().overlaps(trung_laze_do.trung.getBoundingRectangle())) {
+	            play.dan = new Texture("dan_laze_do.png");
+	            trung_laze_do.Alive = false;
+	        }
+	    } else {
+	        // Render game over screen
+	        String gameOverText = String.valueOf(Gdx.graphics.getDeltaTime());
+	        float textX = 330; // Thay thế YourXPosition bằng vị trí X mong muốn
+	        float textY = 200; // Thay thế YourYPosition bằng vị trí Y mong muốn
+	        batch.draw(new TextureRegion(new Texture("gameover.jpg")), textX, textY);
+	    }
+	    
+	    batch.end();
 	}
+
 	
 	@Override
 	public void dispose () {
@@ -202,3 +278,4 @@ public class GameScreen implements Screen {
 		
 	}
 }
+
